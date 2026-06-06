@@ -1,0 +1,80 @@
+// prisma/schema.prisma
+
+datasource db {
+    provider = "sqlite"
+    url      = env("DATABASE_URL") // "file:./dev.db"
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+enum Role {
+    STUDENT
+    TEACHER
+    ADMIN
+}
+
+model Credentials {
+    id       Int    @id @default(autoincrement())
+    username String @unique
+    password String
+    user     User?
+}
+
+model User {
+    id          Int     @id @default(autoincrement())
+    email       String? @unique
+    first_name  String
+    last_name   String
+    father_name String?
+    role        Role    @default(STUDENT)
+
+    credentials    Credentials? @relation(fields: [credentials_id], references: [id])
+    credentials_id Int?         @unique
+
+    group    Group? @relation("UserToGroup", fields: [group_id], references: [id], onDelete: SetNull)
+    group_id Int?
+}
+
+model Group {
+    id     Int    @id @default(autoincrement())
+    name   String @unique
+    users  User[] @relation("UserToGroup")
+    course Int?
+
+    education_field    EducationField? @relation("GroupToEducationField", fields: [education_field_id], references: [id], onDelete: SetNull)
+    education_field_id Int?
+}
+
+model EducationField {
+    id             Int            @id @default(autoincrement())
+    speciality     String
+    profile        String
+    groups         Group[]        @relation("GroupToEducationField")
+    education_plan EducationPlan?
+
+    @@unique([speciality, profile])
+}
+
+model EducationPlan {
+    id                 Int             @id @default(autoincrement())
+    year               Int
+    education_field    EducationField? @relation(fields: [education_field_id], references: [id])
+    education_field_id Int?            @unique
+
+    // ✅ Исправлено: двусторонняя связь без onDelete (Cascade по умолчанию для SQLite)
+    education_subjects EducationSubject[] @relation("EducationPlanToEducationSubject")
+}
+
+model EducationSubject {
+    id     Int    @id @default(autoincrement())
+    name   String
+    hours  String
+    themes Json // SQLite хранит JSON как TEXT
+
+    education_plan    EducationPlan @relation("EducationPlanToEducationSubject", fields: [education_plan_id], references: [id])
+    education_plan_id Int
+
+    @@unique([education_plan_id, name])
+}
