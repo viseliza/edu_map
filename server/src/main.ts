@@ -17,11 +17,19 @@ async function bootstrap() {
 		{ cors: true }
 	);
 	app.use(cookieParser());
-	// app.enableCors();
+	app.enableCors({
+		origin: [
+		'http://localhost:18001',
+		'http://10.0.2.2:18001',
+		/http:\/\/192\.168\.\d+\.\d+:18001/, 
+		],
+		methods: 'GET,POST,PUT,DELETE,PATCH',
+		credentials: true,
+	});
 
 	const config = new DocumentBuilder()
-		.setTitle('Chat-PTK')
-		.setDescription('The chat-PTK API description')
+		.setTitle('EduMap')
+		.setDescription('Сервер для структурированного представления учебной программы направления подготовки студентов колледжа')
 		.setVersion('1.0')
 		.addTag('Authorization')
 		.build();

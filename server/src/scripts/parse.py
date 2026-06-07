@@ -263,7 +263,10 @@ def main():
         sys.exit(1)
     
     data = parse_table_rows(target_rows)
-    print(json.dumps(data, ensure_ascii=False, indent=2))
+    sys.stdout.reconfigure(encoding='utf-8')
+
+    # Выводим JSON с сохранением кириллицы
+    print(json.dumps(data, ensure_ascii=False))
 
 if __name__ == "__main__":
     main()

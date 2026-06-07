@@ -69,7 +69,7 @@ export class CredentialsController {
     async authorize (
         @Res({ passthrough: true }) response: Response,
         @Body() data: CredentialsDto
-    ): Promise<AuthResponseDto> {
+    ): Promise<any> {
         let user: UserNovSUEntity = await new Authorization(data).auth();
         let credentials = await this.credentialsService.findOne({ username: data.username });
         let role = 'STUDENT' as Role;
@@ -88,34 +88,27 @@ export class CredentialsController {
             user['role'] = role;
             
             if (data.username == 'Administrator') {
-                user = this.userCreator.getInfo(user as IUser, 'admin');
+                user = await this.userCreator.getInfo(user as IUser, 'admin');
             } else if (!groupName) {
-                user = this.userCreator.getInfo(user as IUser, 'teacher');
+                user = await this.userCreator.getInfo(user as IUser, 'teacher');
             } else {
-                user = this.userCreator.getInfo(user as IUser, 'student');
+                user = await this.userCreator.getInfo(user as IUser, 'student');
             }
         } else {
             user = await this.userService.getByUsername(data.username);
         }
+        
 
         return {
-            access_token: await this.JwtService.signAsync({
+            user: {
+                id: (user as any).id,
+                email: user.email,
+                role: (user as any).role,
+            },
+            accessToken: await this.JwtService.signAsync({
                 user_id: credentials.id,
                 username: credentials.username
             }),
         }
     }
-    
-    // @UseGuards(AuthGuard)
-    // @ApiOperation({ summary: 'Обновление данных пользователя из таблицы User по логину' })
-    // @Patch('/:username')
-    // update(
-    //     @Param('username') username: string,
-    //     @Body() updateLinkDto: Prisma.UserUpdateInput,
-    // ) {
-    //     return this.credentialsService.update({
-    //         where: { username },
-    //         data: updateLinkDto,
-    //     });
-    // }
 }

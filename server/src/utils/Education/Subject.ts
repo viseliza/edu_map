@@ -1,8 +1,8 @@
-import axios from 'axios';
 import { execFile, execFileSync } from 'child_process';
 import { existsSync, writeFileSync } from 'fs';
 import path from 'path';
 import { promisify } from 'util';
+import { platform } from 'os';
 import { requestWithRetry } from '../Request';
 
 export class Subject {
@@ -20,24 +20,70 @@ export class Subject {
         });
 
         const filePath = `./files/${this.name}.docx`;
-        
-        if (!existsSync(filePath)) 
+
+        if (!existsSync(filePath))
             writeFileSync(filePath, response.data);
-        
+
         this.convert(filePath);
         return await this.parseDoc(filePath.replace('files', 'tmp'));
     }
 
+    private getLibreOfficePath(): string {
+        const plat = platform();
+
+        if (plat === 'win32') {
+            // Проверяем несколько возможных путей установки на Windows
+            const possiblePaths = [
+                'C:\\Program Files\\LibreOffice\\program\\soffice.exe',
+                'C:\\Program Files (x86)\\LibreOffice\\program\\soffice.exe',
+                process.env.LIBREOFFICE_PATH, // Можно задать в .env
+            ];
+
+            const found = possiblePaths.find(p => p && existsSync(p));
+            if (!found) {
+                throw new Error(
+                    'LibreOffice not found. Install it or set LIBREOFFICE_PATH env variable.\n' +
+                    'Expected paths:\n' + possiblePaths.filter(Boolean).join('\n')
+                );
+            }
+            return found;
+        }
+
+        // Linux/macOS: полагаемся на PATH
+        return 'soffice';
+    }
+
     convert(file: string) {
-        if (!existsSync('./tmp/' + file)) {
-            execFileSync('soffice', [
+        const outputPath = './tmp';
+        const outputFile = path.join(outputPath, path.basename(file));
+
+        // Если файл уже сконвертирован — пропускаем
+        if (existsSync(outputFile)) {
+            return;
+        }
+
+        const libreOffice = this.getLibreOfficePath();
+        const absFile = path.resolve(file);
+
+        try {
+            execFileSync(libreOffice, [
                 '--headless',
                 '--convert-to',
                 'docx',
                 '--outdir',
-                './tmp',
-                file,
-            ]);
+                outputPath,
+                absFile,
+            ], {
+                stdio: 'pipe', // Чтобы ошибки не засоряли консоль
+                windowsHide: true, // Скрыть окно на Windows
+            });
+        } catch (error: any) {
+            console.error('LibreOffice conversion failed:', {
+                error: error.message,
+                stderr: error.stderr?.toString(),
+                command: `${libreOffice} --headless --convert-to docx ${absFile}`
+            });
+            throw new Error(`Failed to convert ${file}: ${error.message}`);
         }
     }
 
@@ -46,7 +92,7 @@ export class Subject {
 
         const execFileAsync = promisify(execFile);
 
-        const { stdout } = await execFileAsync('python3', [
+        const { stdout } = await execFileAsync('python', [
             scriptPath,
             filePath.replace('files', 'tmp'),
         ]);

@@ -9,12 +9,15 @@ export class UserAdmin implements IUserCreator {
     ) { }
 
     async getInfo(data: IUser): Promise<any> {
-        return await this.userService.create({
+        const payload = {
             first_name: data.first_name,
             last_name: data.last_name,
             father_name: data.father_name,
-            role: "ADMIN",
+            role: "ADMIN" as any,
             credentials_id: data.credentials_id
-        });
+        };
+
+
+        return await this.userService.create(payload);
     }
 }

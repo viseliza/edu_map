@@ -13,6 +13,9 @@ export class UserService {
 				credentials: {
 					username
 				}
+			},
+			include: {
+				group: true
 			}
 		});
 

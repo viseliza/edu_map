@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="edumap_brand_primary">#0F6B5F</color>
+    <color name="edumap_brand_dark">#163A53</color>
+    <color name="edumap_brand_mint">#47D7BC</color>
+    <color name="edumap_brand_surface">#F1FCF8</color>
+    <color name="edumap_splash_background">#081A22</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

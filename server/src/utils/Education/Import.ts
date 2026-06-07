@@ -67,7 +67,9 @@ export class EducationImport {
 
     fill(education_plan_id: number) {
         return this.subjects.map((subject) => ({
-            ...subject,
+            name: subject.name.toString(),
+            hours: subject.hours.toString(),
+            themes: subject.themes,
             education_plan_id
         }));
     }

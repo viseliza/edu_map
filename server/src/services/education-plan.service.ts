@@ -41,28 +41,25 @@ export class EducationPlanService {
     async fill() {
         let educationFields = await this.get(12);
         if (!educationFields[0].education_plan) {
-            const plan = await this.create({ year: 2022, education_field_id: 12 });
-            console.log('plan', plan)
+            await this.create({ year: 2022, education_field_id: 12 });
             educationFields = await this.get(12);
         }
 
         const educationPlan = new EducationPlan(educationFields);
         const subjects = await educationPlan.main();
         const updated = Array<Promise<any>>();
-        console.log(subjects);
 
         educationFields.forEach(async (educationField) => {
             const educationPlan = educationField.education_plan;
             let educationSubjects: any;
 
-            if (!educationPlan?.education_subjects) {
+            if (!educationPlan?.education_subjects.length) {
                 const { subjects } = await this.educationSubjectService.import(educationPlan!.id);
                 educationSubjects = subjects;
             } else {
                 educationSubjects = educationPlan!.education_subjects;
             }
             
-
             educationField.education_plan!.education_subjects = educationSubjects.map((subject) => {
                 if (educationPlan?.education_field_id === educationField.id) {
                     const existingSubject = subjects.find((s: any[]) => {

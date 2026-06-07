@@ -12,9 +12,17 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "prisma:push": "npx prisma migrate reset --force --schema=./src/schemas/postgresql.prisma",
     "prisma:postgres": "npx prisma generate --schema=./src/schemas/postgresql.prisma",
     "prisma:dev": "npx prisma migrate dev --schema=./src/schemas/postgresql.prisma && npm run prisma:postgres",
     "prisma:prod": "npx prisma migrate deploy --schema=./src/schemas/postgresql.prisma && npm run prisma:postgres",
+    
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f edumap-api",
+    "docker:restart": "docker-compose restart edumap-api",
+    
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",

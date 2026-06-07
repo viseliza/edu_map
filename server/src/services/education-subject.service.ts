@@ -23,7 +23,6 @@ export class EducationSubjectService {
         });
     }
 
-    // service.ts
     async import(education_plan_id: number) {
         const educationImport = new EducationImport();
         const subjects = educationImport.fill(education_plan_id);

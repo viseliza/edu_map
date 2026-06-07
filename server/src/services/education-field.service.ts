@@ -66,6 +66,10 @@ export class EducationFieldService {
         });
     }
 
+    async getAll() {
+        return await this.prisma.educationField.findMany();
+    }
+
     async update(data: any, where: { id: number }) {
         return await this.prisma.educationField.update({
             where,

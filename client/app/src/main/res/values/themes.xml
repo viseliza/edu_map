@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.EduMap.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/edumap_splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/edumap_splash_icon</item>
+        <item name="postSplashScreenTheme">@style/Theme.EduMap</item>
+    </style>
+
+    <style name="Theme.EduMap" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

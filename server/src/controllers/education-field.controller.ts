@@ -22,6 +22,12 @@ export class EducationFieldController {
     async get() {
         return await this.educationFieldService.get();
     }
+
+    @ApiOperation({ summary: 'Получение всех учебных планов' })
+    @Get('/all')
+    async getAll() {
+        return await this.educationFieldService.getAll();
+    }
     
     @ApiOperation({ summary: 'Получение учебного плана' })
     @Patch('/:id')

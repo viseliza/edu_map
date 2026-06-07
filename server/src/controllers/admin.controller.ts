@@ -25,8 +25,7 @@ export class AdminController {
     @ApiOperation({ summary: 'Заполнение данных' })
     @Get('fill/')
     async pushGroups() {
-        await this.groupService.delete();
-        
+        await this.groupService.delete();        
         const groups = await GroupManager.pushGroups();
         console.log(`[GROUP] ${groups.length} groups added`);
         const groupsResponse = await this.groupService.createMany(groups);

@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  edumap-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: edumap-backend
+    ports:
+      - "18001:18001"  # Порт для мобильного приложения
+      - "5555:5555"    # Prisma Studio (опционально)
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=file:./dev.db
+      - PORT=18001
+      - SERVER_JWT_SECRET=your-secret-key-change-in-prod
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - ./prisma:/app/prisma  # Сохранение БД при пересборке
+    networks:
+      - edumap-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Опционально: отдельный сервис для миграций
+  edumap-migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: edumap-migrate
+    environment:
+      - DATABASE_URL=file:./dev.db
+    volumes:
+      - ./prisma:/app/prisma
+    command: npx prisma migrate deploy --schema=./src/schemas/postgresql.prisma
+    depends_on:
+      - edumap-api
+    networks:
+      - edumap-net
+    profiles:
+      - migrate
+
+networks:
+  edumap-net:
+    driver: bridge
