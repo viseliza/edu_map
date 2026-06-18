@@ -11,25 +11,25 @@ export class EducationFieldController {
         private readonly educationFieldService: EducationFieldService,
     ) { }
 
-    @ApiOperation({ summary: 'Заполнение учебных планов по группам' })
+    @ApiOperation({ summary: 'Заполнение учебных специальностей по группам' })
     @Post('/education-fields')
     async create() {
         return await this.educationFieldService.createMany();
     }
 
-    @ApiOperation({ summary: 'Получение учебного плана' })
+    @ApiOperation({ summary: 'Получение учебной специальности' })
     @Get('/')
     async get() {
         return await this.educationFieldService.get();
     }
 
-    @ApiOperation({ summary: 'Получение всех учебных планов' })
+    @ApiOperation({ summary: 'Получение всех учебных специальностей' })
     @Get('/all')
     async getAll() {
         return await this.educationFieldService.getAll();
     }
     
-    @ApiOperation({ summary: 'Получение учебного плана' })
+    @ApiOperation({ summary: 'Обновление учебных специальностей' })
     @Patch('/:id')
     async update(
         @Body() data: Prisma.EducationFieldUpdateInput,

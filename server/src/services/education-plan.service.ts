@@ -39,12 +39,13 @@ export class EducationPlanService {
     }
 
     async fill() {
-        let educationFields = await this.get(12);
-        if (!educationFields[0].education_plan) {
-            await this.create({ year: 2022, education_field_id: 12 });
-            educationFields = await this.get(12);
+        let educationFields = await this.get(19);
+        if (!educationFields.length || !educationFields[0].education_plan) {
+            await this.create({ year: 2022, education_field_id: 19 });
+            educationFields = await this.get(19);
         }
 
+        console.log(educationFields)
         const educationPlan = new EducationPlan(educationFields);
         const subjects = await educationPlan.main();
         const updated = Array<Promise<any>>();

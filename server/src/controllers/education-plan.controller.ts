@@ -25,7 +25,7 @@ export class EducationPlanController {
     @ApiOperation({ summary: 'Получение учебного плана' })
     @Get('/')
     async get() {
-        return await this.educationPlanService.get(12);
+        return await this.educationPlanService.get(19);
     }
 
     @ApiOperation({ summary: 'Получение учебного плана' })

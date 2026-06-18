@@ -197,19 +197,19 @@ internal fun formatHours(hours: String): String {
     val parts = hours.split("-")
     return buildString {
         if (parts.size >= 1 && parts[0].toIntOrNull() ?: 0 > 0) {
-            append("${parts[0]} ч. лекции")
+            append("${parts[0]} ч. 1 курс")
         }
         if (parts.size >= 2 && parts[1].toIntOrNull() ?: 0 > 0) {
             if (isNotEmpty()) append(", ")
-            append("${parts[1]} ч. практика")
+            append("${parts[1]} ч. 2 курс")
         }
         if (parts.size >= 3 && parts[2].toIntOrNull() ?: 0 > 0) {
             if (isNotEmpty()) append(", ")
-            append("${parts[2]} ч. лабораторные")
+            append("${parts[2]} ч. 3 курс")
         }
         if (parts.size >= 4 && parts[3].toIntOrNull() ?: 0 > 0) {
             if (isNotEmpty()) append(", ")
-            append("${parts[3]} ч. самостоятельная работа")
+            append("${parts[3]} ч. 4 курс ")
         }
         if (isEmpty()) append("Часы не указаны")
     }

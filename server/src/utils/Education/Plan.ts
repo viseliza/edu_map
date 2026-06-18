@@ -17,6 +17,7 @@ export class EducationPlan {
     async main() {
         const [{ profileURL, plans }] = await this.forEach(this.educationFields, this.getPlanURL);
         // const profileURL = 'https://portal.novsu.ru/study/umk1/college/i.187729/?id=1991961';
+        
         return await this.getSubjects(profileURL);
     }
 

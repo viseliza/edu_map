@@ -54,7 +54,7 @@ export class EducationFieldService {
     async get() {
         return await this.prisma.educationField.findMany({
             where: {
-                id: { in: [ 12 ] },
+                id: { in: [ 19 ] },
             },
             include: {
                 education_plan: {
